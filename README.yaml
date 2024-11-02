@@ -1,70 +1,201 @@
-name: "template"
-
+name: "aws-datadog-synthetics"
 # Canonical GitHub repo
-github_repo: "cloudposse-terraform-components/template"
-
+github_repo: "cloudposse-terraform-components/aws-datadog-synthetics"
 # Short description of this project
 description: |-
-  Description of this component
+  This component provides the ability to implement
+  [Datadog synthetic tests](https://docs.datadoghq.com/synthetics/guide/).
 
-usage: |-
-  **Stack Level**: Regional or Test47
+  Synthetic tests allow you to observe how your systems and applications are performing using simulated requests and
+  actions from the AWS managed locations around the globe, and to monitor internal endpoints from
+  [Private Locations](https://docs.datadoghq.com/synthetics/private_locations).
 
-  Here's an example snippet for how to use this component.
-  
+  ## Usage
+
+  **Stack Level**: Regional
+
+  Here's an example snippet for how to use this component:
+
+  ### Stack Configuration
+
   ```yaml
   components:
     terraform:
-      foo:
+      datadog-synthetics:
+        metadata:
+          component: "datadog-synthetics"
+        settings:
+          spacelift:
+            workspace_enabled: true
         vars:
           enabled: true
+          name: "datadog-synthetics"
+          locations:
+            - "all"
+          # List of paths to Datadog synthetic test configurations
+          synthetics_paths:
+            - "catalog/synthetics/examples/*.yaml"
+          synthetics_private_location_component_name: "datadog-synthetics-private-location"
+          private_location_test_enabled: true
   ```
 
+  ### Synthetics Configuration Examples
+
+  Below are examples of Datadog browser and API synthetic tests.
+
+  The synthetic tests are defined in YAML using either the
+  [Datadog Terraform provider](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/synthetics_test)
+  schema or the [Datadog Synthetics API](https://docs.datadoghq.com/api/latest/synthetics) schema. See the
+  `terraform-datadog-platform` Terraform module
+  [README](https://github.com/cloudposse/terraform-datadog-platform/blob/main/modules/synthetics/README.md) for more
+  details. We recommend using the API schema so you can more create and edit tests using the Datadog web API and then
+  import them into this module by downloading the test using the Datadog REST API. (See the Datadog API documentation for
+  the appropriate `curl` commands to use.)
+
+  ```yaml
+  # API schema
+  my-browser-test:
+    name: My Browser Test
+    status: live
+    type: browser
+    config:
+      request:
+        method: GET
+        headers: {}
+        url: https://example.com/login
+      setCookie: |-
+        DatadogTest=true
+    message: "My Browser Test Failed"
+    options:
+      device_ids:
+        - chrome.laptop_large
+        - edge.tablet
+        - firefox.mobile_small
+      ignoreServerCertificateError: false
+      disableCors: false
+      disableCsp: false
+      noScreenshot: false
+      tick_every: 86400
+      min_failure_duration: 0
+      min_location_failed: 1
+      retry:
+        count: 0
+        interval: 300
+      monitor_options:
+        renotify_interval: 0
+      ci:
+        executionRule: non_blocking
+      rumSettings:
+        isEnabled: false
+      enableProfiling: false
+      enableSecurityTesting: false
+    locations:
+      - aws:us-east-1
+      - aws:us-west-2
+
+  # Terraform schema
+  my-api-test:
+    name: "API Test"
+    message: "API Test Failed"
+    type: api
+    subtype: http
+    tags:
+      - "managed-by:Terraform"
+    status: "live"
+    request_definition:
+      url: "CHANGEME"
+      method: GET
+    request_headers:
+      Accept-Charset: "utf-8, iso-8859-1;q=0.5"
+      Accept: "text/json"
+    options_list:
+      tick_every: 1800
+      no_screenshot: false
+      follow_redirects: true
+      retry:
+        count: 2
+        interval: 10
+      monitor_options:
+        renotify_interval: 300
+    assertion:
+      - type: statusCode
+        operator: is
+        target: "200"
+      - type: body
+        operator: validatesJSONPath
+        targetjsonpath:
+          operator: is
+          targetvalue: true
+          jsonpath: foo.bar
+  ```
+
+  These configuration examples are defined in the YAML files in the
+  [catalog/synthetics/examples](https://github.com/cloudposse/terraform-aws-components/tree/main/modules/datadog-synthetics/catalog/synthetics/examples)
+  folder.
+
+  You can use different subfolders for your use-case. For example, you can have `dev` and `prod` subfolders to define
+  different synthetic tests for the `dev` and `prod` environments.
+
+  Then use the `synthetic_paths` variable to point the component to the synthetic test configuration files.
+
+  The configuration files are processed and transformed in the following order:
+
+  - The `datadog-synthetics` component loads the YAML configuration files from the filesystem paths specified by the
+    `synthetics_paths` variable
+
+  - Then, in the
+    [synthetics](https://github.com/cloudposse/terraform-datadog-platform/blob/master/modules/synthetics/main.tf) module,
+    the YAML configuration files are merged and transformed from YAML into the
+    [Datadog Terraform provider](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/synthetics_test)
+    schema
+
+  - And finally, the Datadog Terraform provider uses the
+    [Datadog Synthetics API](https://docs.datadoghq.com/api/latest/synthetics) specifications to call the Datadog API and
+    provision the synthetic tests
+
+  <!-- prettier-ignore-start -->
+
+  <!-- prettier-ignore-end -->
+
+  ## References
+
+  - [Datadog Synthetics](https://docs.datadoghq.com/synthetics)
+  - [Getting Started with Synthetic Monitoring](https://docs.datadoghq.com/getting_started/synthetics)
+  - [Synthetic Monitoring Guides](https://docs.datadoghq.com/synthetics/guide)
+  - [Using Synthetic Test Monitors](https://docs.datadoghq.com/synthetics/guide/synthetic-test-monitors)
+  - [Create An API Test With The API](https://docs.datadoghq.com/synthetics/guide/create-api-test-with-the-api)
+  - [Manage Your Browser Tests Programmatically](https://docs.datadoghq.com/synthetics/guide/manage-browser-tests-through-the-api)
+  - [Browser Tests](https://docs.datadoghq.com/synthetics/browser_tests)
+  - [Synthetics API](https://docs.datadoghq.com/api/latest/synthetics)
+  - [Terraform resource `datadog_synthetics_test`](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/synthetics_test)
 include:
   - "docs/terraform.md"
-
 tags:
-  - terraform
-  - terraform-modules
-  - aws
-  - components
-  - terraform-components
-  - root
-  - geodesic
-  - reference-implementation
-  - reference-architecture
-
+  - component/datadog-synthetics
+  - layer/datadog
+  - provider/aws
+  - provider/datadog
 # Categories of this project
 categories:
-  - terraform-modules/root
-  - terraform-components
-
+  - component/datadog-synthetics
+  - layer/datadog
+  - provider/aws
+  - provider/datadog
 # License of this project
 license: "APACHE2"
-
 # Badges to display
 badges:
-  - name: "Latest Release"
-    image: "https://img.shields.io/github/release/cloudposse-terraform-components/template.svg?style=for-the-badge"
-    url: "https://github.com/cloudposse-terraform-components/template/releases/latest"
-  - name: "Slack Community"
-    image: "https://slack.cloudposse.com/for-the-badge.svg"
-    url: "https://slack.cloudposse.com"
-
-references:
-  - name: "Cloud Posse Documentation"
-    description: "Complete documentation for the Cloud Posse solution"
-    url: "https://docs.cloudposse.com"
-  - name: "Reference Architectures"
-    description: "Launch effortlessly with our turnkey reference architectures, built either by your team or ours."
-    url: "https://cloudposse.com/"
-
+  - name: Latest Release
+    image: https://img.shields.io/github/release/cloudposse-terraform-components/aws-datadog-synthetics.svg?style=for-the-badge
+    url: https://github.com/cloudposse-terraform-components/aws-datadog-synthetics/releases/latest
+  - name: Slack Community
+    image: https://slack.cloudposse.com/for-the-badge.svg
+    url: https://slack.cloudposse.com
 related:
-- name: "Cloud Posse Terraform Modules"
-  description: Our collection of reusable Terraform modules used by our reference architectures.
-  url: "https://docs.cloudposse.com/modules/"
-- name: "Atmos"
-  description: "Atmos is like docker-compose but for your infrastructure"
-  url: "https://atmos.tools"
-
+  - name: "Cloud Posse Terraform Modules"
+    description: Our collection of reusable Terraform modules used by our reference architectures.
+    url: "https://docs.cloudposse.com/modules/"
+  - name: "Atmos"
+    description: "Atmos is like docker-compose but for your infrastructure"
+    url: "https://atmos.tools"
 contributors: [] # If included generates contribs
