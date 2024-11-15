@@ -2,6 +2,6 @@
 _extends: .github
 repository:
   name: aws-datadog-synthetics
-  description: This component provides the ability to implement [Datadog synthetic tests](https://docs
+  description: This component provides the ability to implement Datadog synthetic tests
   homepage: https://cloudposse.com/accelerate
   topics: terraform, terraform-component
