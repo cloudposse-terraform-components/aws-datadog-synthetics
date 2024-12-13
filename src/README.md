@@ -6,7 +6,7 @@ tags:
   - provider/datadog
 ---
 
-# Component: `datadog`
+# Component: `datadog-synthetics`
 
 This component provides the ability to implement
 [Datadog synthetic tests](https://docs.datadoghq.com/synthetics/guide/).
