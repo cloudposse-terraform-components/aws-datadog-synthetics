@@ -176,7 +176,7 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_datadog_configuration"></a> [datadog\_configuration](#module\_datadog\_configuration) | github.com/cloudposse-terraform-components/aws-datadog-credentials//src/modules/datadog_keys | tags/v1.535.2 |
+| <a name="module_datadog_configuration"></a> [datadog\_configuration](#module\_datadog\_configuration) | github.com/cloudposse-terraform-components/aws-datadog-credentials//src/modules/datadog_keys | v1.535.3 |
 | <a name="module_datadog_synthetics"></a> [datadog\_synthetics](#module\_datadog\_synthetics) | cloudposse/platform/datadog//modules/synthetics | 1.5.0 |
 | <a name="module_datadog_synthetics_merge"></a> [datadog\_synthetics\_merge](#module\_datadog\_synthetics\_merge) | cloudposse/config/yaml//modules/deepmerge | 1.0.2 |
 | <a name="module_datadog_synthetics_private_location"></a> [datadog\_synthetics\_private\_location](#module\_datadog\_synthetics\_private\_location) | cloudposse/stack-config/yaml//modules/remote-state | 1.8.0 |
