@@ -9,10 +9,10 @@ locals {
     synthetics_paths = var.synthetics_paths
     # We do not need to include the top-level parameters here because they are always included,
     # but we do need to include the attributes to ensure they are always present, even when var.config_map is empty.
-    config_parameters   = {}
-    locations           = []
-    tags                = {}
-    context_tag_enabled = null
+    config_parameters    = {}
+    locations            = []
+    tags                 = {}
+    context_tags_enabled = null
   } }) : {}
 
   test_keys_list = flatten([for k, v in local.configs : [for kk, vv in module.datadog_synthetics_yaml_config[k].map_configs : {
