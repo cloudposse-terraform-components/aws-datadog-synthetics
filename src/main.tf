@@ -78,9 +78,9 @@ module "datadog_synthetics_yaml_config" {
   map_config_local_base_path = path.module
   map_config_paths           = each.value.synthetics_paths
 
-  # give per-config parameters highest priority, then global, then context tags
+  # Give per-config parameters highest priority, then global, then context tags
   parameters = merge(var.config_parameters, each.value.config_parameters, local.context_tags)
-  context = module.this.context
+  context    = module.this.context
 }
 
 module "datadog_synthetics_merge" {
