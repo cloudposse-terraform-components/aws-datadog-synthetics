@@ -159,7 +159,22 @@ The configuration files are processed and transformed in the following order:
   provision the synthetic tests
 
 <!-- prettier-ignore-start -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- prettier-ignore-end -->
+
+## References
+
+- [Datadog Synthetics](https://docs.datadoghq.com/synthetics)
+- [Getting Started with Synthetic Monitoring](https://docs.datadoghq.com/getting_started/synthetics)
+- [Synthetic Monitoring Guides](https://docs.datadoghq.com/synthetics/guide)
+- [Using Synthetic Test Monitors](https://docs.datadoghq.com/synthetics/guide/synthetic-test-monitors)
+- [Create An API Test With The API](https://docs.datadoghq.com/synthetics/guide/create-api-test-with-the-api)
+- [Manage Your Browser Tests Programmatically](https://docs.datadoghq.com/synthetics/guide/manage-browser-tests-through-the-api)
+- [Browser Tests](https://docs.datadoghq.com/synthetics/browser_tests)
+- [Synthetics API](https://docs.datadoghq.com/api/latest/synthetics)
+- [Terraform resource `datadog_synthetics_test`](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/synthetics_test)
+
+
+<!-- markdownlint-disable -->
 ## Requirements
 
 | Name | Version |
@@ -230,19 +245,10 @@ No resources.
 | <a name="output_datadog_synthetics_test_maps"></a> [datadog\_synthetics\_test\_maps](#output\_datadog\_synthetics\_test\_maps) | Map (name: id) of the created Datadog synthetic tests |
 | <a name="output_datadog_synthetics_test_monitor_ids"></a> [datadog\_synthetics\_test\_monitor\_ids](#output\_datadog\_synthetics\_test\_monitor\_ids) | IDs of the monitors associated with the Datadog synthetics tests |
 | <a name="output_datadog_synthetics_test_names"></a> [datadog\_synthetics\_test\_names](#output\_datadog\_synthetics\_test\_names) | Names of the created Datadog synthetic tests |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-<!-- prettier-ignore-end -->
+<!-- markdownlint-restore -->
 
-## References
 
-- [Datadog Synthetics](https://docs.datadoghq.com/synthetics)
-- [Getting Started with Synthetic Monitoring](https://docs.datadoghq.com/getting_started/synthetics)
-- [Synthetic Monitoring Guides](https://docs.datadoghq.com/synthetics/guide)
-- [Using Synthetic Test Monitors](https://docs.datadoghq.com/synthetics/guide/synthetic-test-monitors)
-- [Create An API Test With The API](https://docs.datadoghq.com/synthetics/guide/create-api-test-with-the-api)
-- [Manage Your Browser Tests Programmatically](https://docs.datadoghq.com/synthetics/guide/manage-browser-tests-through-the-api)
-- [Browser Tests](https://docs.datadoghq.com/synthetics/browser_tests)
-- [Synthetics API](https://docs.datadoghq.com/api/latest/synthetics)
-- [Terraform resource `datadog_synthetics_test`](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/synthetics_test)
+
 
 [<img src="https://cloudposse.com/logo-300x69.svg" height="32" align="right"/>](https://cpco.io/homepage?utm_source=github&utm_medium=readme&utm_campaign=cloudposse-terraform-components/aws-datadog-synthetics&utm_content=)
+
