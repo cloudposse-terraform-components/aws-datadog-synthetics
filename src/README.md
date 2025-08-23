@@ -14,7 +14,6 @@ This component provides the ability to implement
 Synthetic tests allow you to observe how your systems and applications are performing using simulated requests and
 actions from the AWS managed locations around the globe, and to monitor internal endpoints from
 [Private Locations](https://docs.datadoghq.com/synthetics/private_locations).
-
 ## Usage
 
 **Stack Level**: Regional
@@ -161,18 +160,6 @@ The configuration files are processed and transformed in the following order:
 <!-- prettier-ignore-start -->
 <!-- prettier-ignore-end -->
 
-## References
-
-- [Datadog Synthetics](https://docs.datadoghq.com/synthetics)
-- [Getting Started with Synthetic Monitoring](https://docs.datadoghq.com/getting_started/synthetics)
-- [Synthetic Monitoring Guides](https://docs.datadoghq.com/synthetics/guide)
-- [Using Synthetic Test Monitors](https://docs.datadoghq.com/synthetics/guide/synthetic-test-monitors)
-- [Create An API Test With The API](https://docs.datadoghq.com/synthetics/guide/create-api-test-with-the-api)
-- [Manage Your Browser Tests Programmatically](https://docs.datadoghq.com/synthetics/guide/manage-browser-tests-through-the-api)
-- [Browser Tests](https://docs.datadoghq.com/synthetics/browser_tests)
-- [Synthetics API](https://docs.datadoghq.com/api/latest/synthetics)
-- [Terraform resource `datadog_synthetics_test`](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/synthetics_test)
-
 
 <!-- markdownlint-disable -->
 ## Requirements
@@ -246,6 +233,29 @@ No resources.
 | <a name="output_datadog_synthetics_test_monitor_ids"></a> [datadog\_synthetics\_test\_monitor\_ids](#output\_datadog\_synthetics\_test\_monitor\_ids) | IDs of the monitors associated with the Datadog synthetics tests |
 | <a name="output_datadog_synthetics_test_names"></a> [datadog\_synthetics\_test\_names](#output\_datadog\_synthetics\_test\_names) | Names of the created Datadog synthetic tests |
 <!-- markdownlint-restore -->
+
+
+
+## References
+
+
+- [Datadog Synthetics](https://docs.datadoghq.com/synthetics) - %!s(<nil>)
+
+- [Getting Started with Synthetic Monitoring](https://docs.datadoghq.com/getting_started/synthetics) - %!s(<nil>)
+
+- [Synthetic Monitoring Guides](https://docs.datadoghq.com/synthetics/guide) - %!s(<nil>)
+
+- [Using Synthetic Test Monitors](https://docs.datadoghq.com/synthetics/guide/synthetic-test-monitors) - %!s(<nil>)
+
+- [Create An API Test With The API](https://docs.datadoghq.com/synthetics/guide/create-api-test-with-the-api) - %!s(<nil>)
+
+- [Manage Your Browser Tests Programmatically](https://docs.datadoghq.com/synthetics/guide/manage-browser-tests-through-the-api) - %!s(<nil>)
+
+- [Browser Tests](https://docs.datadoghq.com/synthetics/browser_tests) - %!s(<nil>)
+
+- [Synthetics API](https://docs.datadoghq.com/api/latest/synthetics) - %!s(<nil>)
+
+- [Terraform resource `datadog_synthetics_test`](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/synthetics_test) - %!s(<nil>)
 
 
 
