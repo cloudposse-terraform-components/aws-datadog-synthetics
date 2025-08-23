@@ -9,7 +9,6 @@ description: |-
   Synthetic tests allow you to observe how your systems and applications are performing using simulated requests and
   actions from the AWS managed locations around the globe, and to monitor internal endpoints from
   [Private Locations](https://docs.datadoghq.com/synthetics/private_locations).
-
 usage: |-
   **Stack Level**: Regional
 
@@ -154,35 +153,34 @@ usage: |-
 
   <!-- prettier-ignore-start -->
   <!-- prettier-ignore-end -->
-
 references:
   - name: Datadog Synthetics
     url: https://docs.datadoghq.com/synthetics
-    description: 
+    description:
   - name: Getting Started with Synthetic Monitoring
     url: https://docs.datadoghq.com/getting_started/synthetics
-    description: 
+    description:
   - name: Synthetic Monitoring Guides
     url: https://docs.datadoghq.com/synthetics/guide
-    description: 
+    description:
   - name: Using Synthetic Test Monitors
     url: https://docs.datadoghq.com/synthetics/guide/synthetic-test-monitors
-    description: 
+    description:
   - name: Create An API Test With The API
     url: https://docs.datadoghq.com/synthetics/guide/create-api-test-with-the-api
-    description: 
+    description:
   - name: Manage Your Browser Tests Programmatically
     url: https://docs.datadoghq.com/synthetics/guide/manage-browser-tests-through-the-api
-    description: 
+    description:
   - name: Browser Tests
     url: https://docs.datadoghq.com/synthetics/browser_tests
-    description: 
+    description:
   - name: Synthetics API
     url: https://docs.datadoghq.com/api/latest/synthetics
-    description: 
+    description:
   - name: Terraform resource `datadog_synthetics_test`
     url: https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/synthetics_test
-    description: 
+    description:
 tags:
   - component/datadog-synthetics
   - layer/datadog
