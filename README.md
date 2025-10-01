@@ -42,7 +42,7 @@ actions from the AWS managed locations around the globe, and to monitor internal
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://cloudposse.com/images/partners/datadog-white.svg"/>
   <source media="(prefers-color-scheme: light)" srcset="https://cloudposse.com/images/partners/datadog-purple.svg"/>
-  <img alt="Datadog" src="https://cloudposse.com/images/partners/datadog-purple.svg" align="right" width="40%"/>
+  <img class="datadog-logo" alt="Datadog" src="https://cloudposse.com/images/partners/datadog-purple.svg" align="right" width="40%"/>
 </picture>
 
 
