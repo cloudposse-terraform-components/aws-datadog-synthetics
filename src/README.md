@@ -14,6 +14,22 @@ This component provides the ability to implement
 Synthetic tests allow you to observe how your systems and applications are performing using simulated requests and
 actions from the AWS managed locations around the globe, and to monitor internal endpoints from
 [Private Locations](https://docs.datadoghq.com/synthetics/private_locations).
+
+## Sponsorship
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://cloudposse.com/images/partners/datadog-white.svg"/>
+  <source media="(prefers-color-scheme: light)" srcset="https://cloudposse.com/images/partners/datadog-purple.svg"/>
+  <img class="datadog-logo" alt="Datadog" src="https://cloudposse.com/images/partners/datadog-purple.svg" align="right" width="40%"/>
+</picture>
+
+
+This project is supported by the [Datadog Open Source Program](https://www.datadoghq.com/partner/open-source/).
+
+As part of this collaboration, Datadog provides a dedicated sandbox account that we use for automated integration and acceptance testing. This contribution allows us to continuously validate changes against a real Datadog environment, improving reliability and reducing the risk of regressions.
+
+We are grateful to Datadog for supporting our open source ecosystem and helping ensure that infrastructure code for Terraform remains stable and well-tested
+___
 ## Usage
 
 **Stack Level**: Regional
@@ -178,8 +194,8 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_datadog_configuration"></a> [datadog\_configuration](#module\_datadog\_configuration) | github.com/cloudposse-terraform-components/aws-datadog-credentials//src/modules/datadog_keys | v1.535.7 |
-| <a name="module_datadog_synthetics"></a> [datadog\_synthetics](#module\_datadog\_synthetics) | cloudposse/platform/datadog//modules/synthetics | 1.5.0 |
+| <a name="module_datadog_configuration"></a> [datadog\_configuration](#module\_datadog\_configuration) | github.com/cloudposse-terraform-components/aws-datadog-credentials//src/modules/datadog_keys | v1.535.11 |
+| <a name="module_datadog_synthetics"></a> [datadog\_synthetics](#module\_datadog\_synthetics) | cloudposse/platform/datadog//modules/synthetics | 1.6.0 |
 | <a name="module_datadog_synthetics_merge"></a> [datadog\_synthetics\_merge](#module\_datadog\_synthetics\_merge) | cloudposse/config/yaml//modules/deepmerge | 1.0.2 |
 | <a name="module_datadog_synthetics_private_location"></a> [datadog\_synthetics\_private\_location](#module\_datadog\_synthetics\_private\_location) | cloudposse/stack-config/yaml//modules/remote-state | 1.8.0 |
 | <a name="module_datadog_synthetics_yaml_config"></a> [datadog\_synthetics\_yaml\_config](#module\_datadog\_synthetics\_yaml\_config) | cloudposse/config/yaml | 1.0.2 |

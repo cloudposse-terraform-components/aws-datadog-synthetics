@@ -101,7 +101,7 @@ module "datadog_synthetics_merge" {
 
 module "datadog_synthetics" {
   source  = "cloudposse/platform/datadog//modules/synthetics"
-  version = "1.3.0"
+  version = "1.6.0"
 
   for_each = local.synthetics_merged
 
