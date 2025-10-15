@@ -3,12 +3,15 @@ name: "aws-datadog-synthetics"
 github_repo: "cloudposse-terraform-components/aws-datadog-synthetics"
 # Short description of this project
 description: |-
-  This component provides the ability to implement
-  [Datadog synthetic tests](https://docs.datadoghq.com/synthetics/guide/).
+  This component provides the ability to implement [Datadog synthetic tests](https://docs.datadoghq.com/synthetics/guide/).
 
-  Synthetic tests allow you to observe how your systems and applications are performing using simulated requests and
-  actions from the AWS managed locations around the globe, and to monitor internal endpoints from
-  [Private Locations](https://docs.datadoghq.com/synthetics/private_locations).
+  Synthetic tests allow you to observe how your systems and applications are performing using simulated requests and actions
+  from the AWS managed locations around the globe, and to monitor internal endpoints
+  from [Private Locations](https://docs.datadoghq.com/synthetics/private_locations).
+
+  We recommend creating tests using the [Datadog web UI](https://docs.datadoghq.com/synthetics/guide/manage-browser-tests-through-the-ui)
+  and then importing them into this component using the [Datadog REST API](https://docs.datadoghq.com/api/latest/synthetics).
+  See details below in the [Importing tests from the Datadog API](#importing-tests-from-the-datadog-api) section.
 
   ## Sponsorship
 
@@ -45,11 +48,36 @@ usage: |-
         vars:
           enabled: true
           name: "datadog-synthetics"
+          config_map:
+            # The top-level key must be unique within the component configuration.
+            this-test:
+              config_parameters:
+                this_test_param: "this-test-value"
+              synthetics_paths:
+                # Paths relative to the component directory (where `main.tf` is located)
+                - catalog/synthetics/this-test.yaml
+            # If re-using the same test with different parameters, ensure they keys
+            # are distinct. One way to do this is to parameterize the key along with
+            # the test parameters and fill them in using Atmos' Go template support,
+            # https://atmos.tools/core-concepts/stacks/imports/#go-templates-in-imports
+            "web-page_{{ .web_page }}":
+              config_parameters:
+                web_page: "{{ .web_page }}"
+              synthetics_paths:
+                - catalog/synthetics/web-page.yaml
           locations:
-            - "all"
-          # List of paths to Datadog synthetic test configurations
-          synthetics_paths:
-            - "catalog/synthetics/examples/*.yaml"
+            # Locations configured here are added to all tests.
+            # You can configure additional locations per test in the test configuration YAML file
+            # and in `config_map.locations`.
+            - "aws:us-west-2"
+          # As with `locations`, if `private_location_test_enabled` is set to `true`,
+          # the private location is added to all tests. In this case, the name of the
+          # private location is retrieved from the specified component.
+          # Alternately, you can configure the private location per test just like
+          # any other location, using the location ID, which has the form
+          # pl:<private-location-name>-<32-hex-characters>
+          # and can be retrieved from the Datadog web UI under
+          # UX Monitoring > Settings > Private Locations > <private-location-name> > Metadata > ID
           synthetics_private_location_component_name: "datadog-synthetics-private-location"
           private_location_test_enabled: true
   ```
@@ -58,14 +86,45 @@ usage: |-
 
   Below are examples of Datadog browser and API synthetic tests.
 
-  The synthetic tests are defined in YAML using either the
-  [Datadog Terraform provider](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/synthetics_test)
-  schema or the [Datadog Synthetics API](https://docs.datadoghq.com/api/latest/synthetics) schema. See the
-  `terraform-datadog-platform` Terraform module
-  [README](https://github.com/cloudposse/terraform-datadog-platform/blob/main/modules/synthetics/README.md) for more
-  details. We recommend using the API schema so you can more create and edit tests using the Datadog web API and then
-  import them into this module by downloading the test using the Datadog REST API. (See the Datadog API documentation for
-  the appropriate `curl` commands to use.)
+  The synthetic tests are defined in YAML using either the [Datadog Terraform provider](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/synthetics_test) schema
+  or the [Datadog Synthetics API](https://docs.datadoghq.com/api/latest/synthetics) schema.
+  See the `terraform-datadog-platform` Terraform module [README](https://github.com/cloudposse/terraform-datadog-platform/blob/main/modules/synthetics/README.md) for more details.
+  We recommend using the API schema so you can more easily create and edit tests using the Datadog
+  web API and then import them into this module by downloading the test using
+  the Datadog REST API. (See the Datadog API documentation for the appropriate
+  `curl` commands to use.)
+
+  ### Parameterizing tests
+
+  You can parameterize the tests by using variables in the YAML files.
+  You supply the values for the variables in the `config_parameters` map,
+  and interpolate them into the test configuration using the `${variable}` syntax.
+
+  For example, with the following configuration:
+
+  ```yaml
+  config_parameters:
+    ssl_host: "example.com"
+  ```
+
+  You can include the variable in the test configuration like this:
+
+  ```yaml
+  "SSL ${ssl_host}":
+    name: "SSL ${ssl_host}"
+    message: "SSL ${ssl_host} certificate is about to expire"
+  ```
+
+  ### Special note about tags
+
+  Cloud Posse modules expect tags to be passed in as a map of strings, but
+  the Datadog Terraform provider and the Datadog API expecs tags to be passed in
+  as a list of strings. Unfortunately, we do not have a good way to support
+  both formats at the same time. We have chosen to support the
+  map of strings, to be consistent with other Cloud Posse modules, which
+  means that tags passed in via the API schema will be ignored. If you want
+  to specify tags in the YAML files, you need to specify them as maps of strings.
+
 
   ```yaml
   # API schema
@@ -144,29 +203,151 @@ usage: |-
           jsonpath: foo.bar
   ```
 
-  These configuration examples are defined in the YAML files in the
-  [catalog/synthetics/examples](https://github.com/cloudposse/terraform-aws-components/tree/main/modules/datadog-synthetics/catalog/synthetics/examples)
-  folder.
+  These configuration examples are defined in the YAML files in the [catalog/synthetics/examples](https://github.com/cloudposse/terraform-aws-components/tree/main/modules/datadog-synthetics/catalog/synthetics/examples) folder.
 
-  You can use different subfolders for your use-case. For example, you can have `dev` and `prod` subfolders to define
-  different synthetic tests for the `dev` and `prod` environments.
+  You can use different subfolders for your use-case.
+  For example, you can have `dev` and `prod` subfolders to define different synthetic tests for the `dev` and `prod` environments.
 
   Then use the `synthetic_paths` variable to point the component to the synthetic test configuration files.
 
   The configuration files are processed and transformed in the following order:
 
-  - The `datadog-synthetics` component loads the YAML configuration files from the filesystem paths specified by the
-    `synthetics_paths` variable
+  - The `datadog-synthetics` component loads the YAML configuration files from the filesystem paths specified by the `synthetics_paths` variable
 
-  - Then, in the
-    [synthetics](https://github.com/cloudposse/terraform-datadog-platform/blob/master/modules/synthetics/main.tf) module,
-    the YAML configuration files are merged and transformed from YAML into the
-    [Datadog Terraform provider](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/synthetics_test)
-    schema
+  - Then, in the [synthetics](https://github.com/cloudposse/terraform-datadog-platform/blob/master/modules/synthetics/main.tf) module,
+    the YAML configuration files are merged and transformed from YAML into
+    the [Datadog Terraform provider](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/synthetics_test) schema
 
   - And finally, the Datadog Terraform provider uses the
-    [Datadog Synthetics API](https://docs.datadoghq.com/api/latest/synthetics) specifications to call the Datadog API and
-    provision the synthetic tests
+    [Datadog Synthetics API](https://docs.datadoghq.com/api/latest/synthetics) specifications to call the Datadog API and provision the synthetic tests
+
+  ## Importing tests from the Datadog API
+
+  Importing a test from the Datadog API is a multistep process.
+
+  #### Get and set the APP and API keys
+  First, get APP and API keys from somewhere. You can use the [Datadog web UI](https://app.datadoghq.com/organization-settings/application-keys)
+  to create your own keys or use an existing one. They are secrets and should be treated as such, but for practical purposes
+  you should put them in environment variables. Depending on your shell settings, you may be able to keep them out of your
+  shell history (which gets stored on your home filesystem) by prepending a space to the command. Otherwise, keep
+  your shell history from being written to disk by executing `unset HISTFILE` (which you might want to do in a subshell
+  so that you can resume saving history to disk when you are done).
+
+  ```shell
+     export DD_API_KEY="1234567890abcdef1234567890abcdef"
+     export DD_APP_KEY="1234567890abcdef1234567890abcdef12345678"
+  ```
+
+  #### Get the public ID of the test you want to import and save it to a file as YAML
+
+  Next, get the public ID of the test you want to import. You can get it from the URL of the test in the Datadog web UI,
+  or it is conveniently presented in the test details in the Datadog web UI, with a copy button.
+
+  ```shell
+  export public_id="abc-def-hij"
+  ```
+
+  Next, download the test definition (in JSON), convert it to YAML, and save it to a file. We use the `yq` command from
+  [mikefarah](https://github.com/mikefarah/yq) to do the conversion. You can install it with `brew install yq` on a Mac,
+  or you the version pre-installed in Geodesic. (Note that there are several other similar tools with the same name,
+  so be sure you are using the one from `mikefarah` by reviewing the output of `yq --version`.)
+
+  Determine whether you are downloading a Browser test or an API test and use the appropriate API endpoint.
+  (As of this time, the response returned when you [Get the list of all synthetic tests](https://docs.datadoghq.com/api/latest/synthetics/#get-the-list-of-all-synthetic-tests) does not include the steps of any
+  multistep browser tests, despite what the documentation says, otherwise you could just get all
+  the test definitions from there.)
+  All tests shown in the Datadog web UI are API tests except for the ones with type "Browser Test".
+
+  ```shell
+  # Be sure you have already set `public_id` and `DATADOG_APP_KEY` as described above
+  # For browser tests, replace `/api/` with `/browser/` in the URL below
+  # Curl command
+  curl -sSL -X GET "https://api.datadoghq.com/api/v1/synthetics/tests/api/${public_id}" \
+  -H "Accept: application/json" \
+  -H "DD-API-KEY: ${DD_API_KEY}" \
+  -H "DD-APPLICATION-KEY: ${DD_APP_KEY}" | yq -oy -P > ${public_id}.yaml
+  ```
+
+  #### Edit the YAML file and install it in the component catalog
+
+  If this is your first time importing this test, you will need to make
+  several edits to the YAML file. If you have already imported the test previously,
+  you can just identify the relevant differences that need to be incorporated
+  into your existing YAML file and make those changes. It is up to you
+  to decide which approach is easier.
+
+  This module supports the Datadog API output definition, but requires some minor modifications.
+  First, the entire test needs to be wrapped with a key that is unique
+  within the overall component configuration. Therefore, we recommend parameterizing
+  the key with the name of the test.
+
+  1. Indent the entire test by 2 spaces
+  2. Add a key to the top level of the test, combining the generic name of the test
+  with a parameterized value. For example, for the test that checks the SSL certificate,
+  we use `"SSL ${ssl_host}":`
+  3. Parameterize the test as desired, replacing values with `${variables}` as needed.
+  In particular, you should at least parameterize the top-level key, and the `name` and `message` fields.
+  4. Remove the read-only fields. This is not strictly necessary, but it makes the
+  test file more concise. Read-only fields that should be removed include:
+     - `public_id`
+     - `created_at`
+     - `modified_at`
+     - `creator` and its sub-keys
+     - `monitor_id`
+  5. Remove fields that will be set by this module. Most especially, remove the `tags` field.
+  The `tags` field is a list, but this module expects tags to be a map of strings, and having
+  both a `tags` list and a `tags` map in the same test will cause Terraform to fail.
+  6. Edit the `message` to remove any tags that will be added by this module. For example, `@opsgenie`.
+
+  When done editing the file, rename it to something descriptive, move it to the
+  `catalog/synthetics/` folder of this module, and add the file to git.
+
+  #### Add the test, with parameters, to the appropriate stack configuration
+
+  In the Atmos stack configuration for this module, add the new test to the `config_map` variable.
+  You can do this in a catalog file, or in the stack configuration itself. For example:
+
+  ```yaml
+  config_map:
+    # The top-level key must be unique within the component configuration.
+    this-test:
+      config_parameters:
+        this_test_param: "this-test-value"
+      synthetics_paths:
+        # Paths relative to the component directory (where `main.tf` is located)
+        - catalog/synthetics/this-test.yaml
+    # If re-using the same test with different parameters, ensure they keys
+    # are distinct. One way to do this is to parameterize the key along with
+    # the test parameters and fill them in using Atmos' Go template support,
+    # https://atmos.tools/core-concepts/stacks/imports/#go-templates-in-imports
+    "web-page_{{ .web_page }}":
+    config_parameters:
+      web_page: "{{ .web_page }}"
+    synthetics_paths:
+      - catalog/synthetics/web-page.yaml
+  ```
+
+  #### Import the test into the component
+
+  Run `atmos terraform plan <component> -s=<stack-name>` to see how the new test will be added to the terraform state.
+  Look for a line like
+
+  ```
+  module.datadog_synthetics["long key name"].datadog_synthetics_test.default["other long key name"] will be created
+  ```
+
+  Then import the test into the component by running `atmos terraform import`, copying the line above and
+  the public ID (set as an environment variable in an earlier step) into the command. For example:
+
+  ```shell
+  atmos terraform import datadog-synthetics `module.datadog_synthetics["long key name"].datadog_synthetics_test.default["other long key name"]` ${public_id} -s=<stack-name>
+  ```
+
+  #### Verify the test was imported correctly
+
+  Again run `atmos terraform plan <component> -s=<stack-name>` to see how the new test will be modified by Terraform.
+  Minor modifications such as adding tags or updating the message are expected, but unwanted changes should
+  be fixed before applying the plan.
 
   <!-- prettier-ignore-start -->
   <!-- prettier-ignore-end -->
