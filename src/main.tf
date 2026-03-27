@@ -50,7 +50,7 @@ module "datadog_synthetics_merge" {
 
 module "datadog_synthetics" {
   source  = "cloudposse/platform/datadog//modules/synthetics"
-  version = "1.7.0"
+  version = "2.0.0"
 
   # Disable default tags because we manage them ourselves in this module, because we want to make them lowercase.
   default_tags_enabled = false
